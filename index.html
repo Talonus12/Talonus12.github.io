@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chris Schiller | Control Systems Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #0b1120;
+      --navy-mid:   #111c30;
+      --navy-light: #1a2a45;
+      --navy-card:  #162035;
+      --accent:     #4f9cf9;
+      --accent-dim: #2a5da8;
+      --white:      #f0f4ff;
+      --muted:      #7a90b8;
+      --border:     #1e2e4a;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 3rem;
+      background: rgba(11, 17, 32, 0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: padding 0.3s;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 99;
+      background: var(--navy);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--white);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin-bottom: 3rem;
+      line-height: 1;
+    }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(79,156,249,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(79,156,249,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Grid lines decoration */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,156,249,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,156,249,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 7.5rem);
+      letter-spacing: 0.04em;
+      line-height: 0.95;
+      color: var(--white);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--muted);
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 3px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--navy);
+      border: 2px solid var(--accent);
+    }
+    .btn-primary:hover { background: transparent; color: var(--accent); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--navy-mid); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+
+    .about-text p strong { color: var(--white); font-weight: 500; }
+
+    .about-photo {
+      position: relative;
+    }
+
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--navy-light);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-placeholder {
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .photo-placeholder .icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .photo-placeholder p {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* corner accents */
+    .photo-frame::before, .photo-frame::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--accent);
+      border-style: solid;
+      z-index: 2;
+    }
+    .photo-frame::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .photo-frame::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--navy); }
+
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.4rem;
+      top: 0.45rem;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--navy);
+      box-shadow: 0 0 0 3px rgba(79,156,249,0.2);
+    }
+
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-role {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.15rem;
+    }
+
+    .timeline-company {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .timeline-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--navy-mid); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-dim);
+    }
+
+    .project-media {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--navy-light);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .project-card:hover .project-media img { transform: scale(1.04); }
+
+    .project-media iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .media-placeholder {
+      text-align: center;
+      color: var(--muted);
+      padding: 1rem;
+    }
+
+    .media-placeholder .icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .media-placeholder p { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; }
+
+    .project-body { padding: 1.4rem; }
+
+    .project-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(79,156,249,0.08);
+      border: 1px solid rgba(79,156,249,0.2);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .project-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── HOW TO ADD PROJECTS — comment guide in HTML below ── */
+
+    /* ── SKILLS ── */
+    #skills { background: var(--navy); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-group {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+    }
+
+    .skill-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .skill-list li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .skill-list li::before {
+      content: '';
+      display: block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--navy-mid); }
+
+    .contact-inner {
+      max-width: 620px;
+    }
+
+    .contact-intro {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.4rem;
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      text-decoration: none;
+      color: var(--white);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    .contact-link-icon {
+      font-size: 1.2rem;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .contact-link-label {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+
+    .contact-link-value {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      section { padding: 4.5rem 1.3rem; }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .about-photo { order: -1; max-width: 280px; margin: 0 auto; }
+
+      .projects-grid { grid-template-columns: 1fr; }
+
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════ -->
+  <nav>
+    <a href="#home" class="nav-logo">CS</a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home"       onclick="closeMenu()">Home</a>
+    <a href="#about"      onclick="closeMenu()">About</a>
+    <a href="#experience" onclick="closeMenu()">Experience</a>
+    <a href="#projects"   onclick="closeMenu()">Projects</a>
+    <a href="#skills"     onclick="closeMenu()">Skills</a>
+    <a href="#contact"    onclick="closeMenu()">Contact</a>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       HOME
+  ══════════════════════════════════════ -->
+  <section id="home">
+    <div class="hero-bg"></div>
+    <div class="container hero-content">
+      <p class="hero-eyebrow">Control Systems Engineer</p>
+      <h1 class="hero-name">Chris<br>Schiller</h1>
+      <p class="hero-title">
+        Designing and building robust control systems — from concept through commissioning.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact"  class="btn btn-secondary">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       ABOUT
+       — Edit the paragraphs below with your bio
+       — Replace the photo: add your image file to the repo,
+         then swap "YOUR_PHOTO.jpg" with your filename
+  ══════════════════════════════════════ -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label reveal">About</p>
+      <h2 class="section-title reveal">About Me</h2>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            Hi, I'm <strong>Chris Schiller</strong> — a Control Systems Engineer with a passion
+            for designing reliable, efficient, and scalable automation solutions.
+          </p>
+          <p>
+            <!-- ADD YOUR BIO HERE — describe your background, experience, and what you specialise in -->
+            My work spans [your specialisations — e.g. PLC programming, SCADA systems, process control].
+            I enjoy tackling complex engineering challenges and delivering solutions that perform
+            in demanding real-world environments.
+          </p>
+          <p>
+            <!-- ADD A PERSONAL TOUCH — e.g. education, interests, what drives you -->
+            Outside of work, I [your interests / hobbies / what makes you, you].
+          </p>
+          <br>
+          <a href="#contact" class="btn btn-primary">Let's Connect</a>
+        </div>
+
+        <div class="about-photo reveal">
+          <div class="photo-frame">
+            <!-- TO ADD YOUR PHOTO:
+                 1. Upload your photo file to the GitHub repo (e.g. "photo.jpg")
+                 2. Uncomment the <img> line below and update the src filename
+                 3. Delete the .photo-placeholder div below it -->
+            <!-- <img src="photo.jpg" alt="Chris Schiller" /> -->
+            <div class="photo-placeholder">
+              <span class="icon">🖼️</span>
+              <p>Add your photo here<br>(see comment in code)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       EXPERIENCE
+       — To add a new role: copy one .timeline-item block
+         and paste it below the others, then edit the text
+  ══════════════════════════════════════ -->
+  <section id="experience">
+    <div class="container">
+      <p class="section-label reveal">Experience</p>
+      <h2 class="section-title reveal">Work History</h2>
+
+      <div class="timeline">
+
+        <!-- EXPERIENCE ITEM 1 — edit or replace with your most recent role -->
+        <div class="timeline-item reveal">
+          <p class="timeline-date">2022 — Present</p>
+          <p class="timeline-role">Control Systems Engineer</p>
+          <p class="timeline-company">Company Name — Location</p>
+          <p class="timeline-desc">
+            Brief description of your responsibilities and key achievements in this role.
+            What systems did you work on? What impact did your work have?
+          </p>
+        </div>
+
+        <!-- EXPERIENCE ITEM 2 -->
+        <div class="timeline-item reveal">
+          <p class="timeline-date">2019 — 2022</p>
+          <p class="timeline-role">Previous Role Title</p>
+          <p class="timeline-company">Company Name — Location</p>
+          <p class="timeline-desc">
+            Brief description of your responsibilities and key achievements in this role.
+          </p>
+        </div>
+
+        <!-- EXPERIENCE ITEM 3 -->
+        <div class="timeline-item reveal">
+          <p class="timeline-date">2017 — 2019</p>
+          <p class="timeline-role">Earlier Role Title</p>
+          <p class="timeline-company">Company Name — Location</p>
+          <p class="timeline-desc">
+            Brief description of your responsibilities and key achievements in this role.
+          </p>
+        </div>
+
+        <!-- ▶ TO ADD MORE: copy a .timeline-item block above and paste here ◀ -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       PROJECTS
+       — IMAGE PROJECT: copy the "image card" block below
+       — VIDEO PROJECT: copy the "video card" block below
+       — Paste your copy inside .projects-grid and edit the text
+
+       For images: upload the file to your repo, update src="YOUR_IMAGE.jpg"
+       For videos: paste your YouTube embed URL into the iframe src
+         YouTube embed format: https://www.youtube.com/embed/VIDEO_ID
+         (replace VIDEO_ID with the ID from your YouTube link)
+  ══════════════════════════════════════ -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label reveal">Work</p>
+      <h2 class="section-title reveal">Projects</h2>
+
+      <div class="projects-grid">
+
+        <!-- ── IMAGE PROJECT CARD (copy this block to add more) ── -->
+        <div class="project-card reveal">
+          <div class="project-media">
+            <!-- Swap YOUR_IMAGE.jpg with your uploaded image filename -->
+            <!-- <img src="images/YOUR_IMAGE.jpg" alt="Project Name" /> -->
+            <div class="media-placeholder">
+              <span class="icon">📷</span>
+              <p>Add image<br>(see comment in code)</p>
+            </div>
+          </div>
+          <div class="project-body">
+            <span class="project-tag">PLC / SCADA</span>
+            <p class="project-name">Project Title Here</p>
+            <p class="project-desc">
+              Short description of what this project involved, the problem it solved,
+              and the technologies or methods used.
+            </p>
+          </div>
+        </div>
+
+        <!-- ── VIDEO PROJECT CARD (copy this block to add more) ── -->
+        <div class="project-card reveal">
+          <div class="project-media">
+            <!-- Replace VIDEO_ID with your YouTube video ID -->
+            <!-- e.g. for https://www.youtube.com/watch?v=dQw4w9WgXcQ → VIDEO_ID = dQw4w9WgXcQ -->
+            <!-- <iframe src="https://www.youtube.com/embed/VIDEO_ID"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe> -->
+            <div class="media-placeholder">
+              <span class="icon">▶️</span>
+              <p>Add YouTube video<br>(see comment in code)</p>
+            </div>
+          </div>
+          <div class="project-body">
+            <span class="project-tag">Automation</span>
+            <p class="project-name">Project Title Here</p>
+            <p class="project-desc">
+              Short description of what this project involved, the problem it solved,
+              and the technologies or methods used.
+            </p>
+          </div>
+        </div>
+
+        <!-- ▶ TO ADD MORE PROJECTS: copy either card block above and paste here ◀ -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SKILLS
+       — Edit the skill groups and lists below
+       — To add a new group: copy a .skill-group block
+       — To add a skill: add a new <li> inside a .skill-list
+  ══════════════════════════════════════ -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label reveal">Expertise</p>
+      <h2 class="section-title reveal">Skills</h2>
+
+      <div class="skills-grid">
+
+        <div class="skill-group reveal">
+          <p class="skill-group-title">Control Systems</p>
+          <ul class="skill-list">
+            <li>PLC Programming</li>
+            <li>SCADA Systems</li>
+            <li>HMI Design</li>
+            <li>Process Control</li>
+          </ul>
+        </div>
+
+        <div class="skill-group reveal">
+          <p class="skill-group-title">Software & Tools</p>
+          <ul class="skill-list">
+            <li>Tool / Software Name</li>
+            <li>Tool / Software Name</li>
+            <li>Tool / Software Name</li>
+            <li>Tool / Software Name</li>
+          </ul>
+        </div>
+
+        <div class="skill-group reveal">
+          <p class="skill-group-title">Engineering</p>
+          <ul class="skill-list">
+            <li>Skill / Discipline</li>
+            <li>Skill / Discipline</li>
+            <li>Skill / Discipline</li>
+            <li>Skill / Discipline</li>
+          </ul>
+        </div>
+
+        <div class="skill-group reveal">
+          <p class="skill-group-title">Other</p>
+          <ul class="skill-list">
+            <li>Skill</li>
+            <li>Skill</li>
+            <li>Skill</li>
+            <li>Skill</li>
+          </ul>
+        </div>
+
+        <!-- ▶ TO ADD MORE GROUPS: copy a .skill-group block above and paste here ◀ -->
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       CONTACT
+       — Replace the href values with your actual links/email
+  ══════════════════════════════════════ -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label reveal">Say Hello</p>
+      <h2 class="section-title reveal">Contact</h2>
+      <div class="contact-inner">
+        <p class="contact-intro reveal">
+          Interested in working together or want to know more about my work?
+          Feel free to reach out — I'm always open to a conversation.
+        </p>
+
+        <div class="contact-links">
+
+          <!-- EMAIL — replace with your address -->
+          <a href="mailto:your.email@example.com" class="contact-link reveal">
+            <span class="contact-link-icon">✉️</span>
+            <div>
+              <span class="contact-link-label">Email</span>
+              <span class="contact-link-value">your.email@example.com</span>
+            </div>
+          </a>
+
+          <!-- LINKEDIN — replace with your profile URL -->
+          <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-link reveal">
+            <span class="contact-link-icon">💼</span>
+            <div>
+              <span class="contact-link-label">LinkedIn</span>
+              <span class="contact-link-value">linkedin.com/in/yourprofile</span>
+            </div>
+          </a>
+
+          <!-- GITHUB — replace with your username -->
+          <a href="https://github.com/yourusername" target="_blank" class="contact-link reveal">
+            <span class="contact-link-icon">🐙</span>
+            <div>
+              <span class="contact-link-label">GitHub</span>
+              <span class="contact-link-value">github.com/yourusername</span>
+            </div>
+          </a>
+
+          <!-- ▶ TO ADD MORE LINKS: copy a .contact-link block and paste here ◀ -->
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer>
+    <p>© 2025 Chris Schiller · Control Systems Engineer</p>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════ -->
+  <script>
+    // Hamburger menu
+    const hamburger   = document.getElementById('hamburger');
+    const mobileMenu  = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    function closeMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
